@@ -1,33 +1,43 @@
-# File: .github/workflows/set_env.yml
+# .github/workflows/set_env.yml
 
-name: Export AWS ENV Variables
+name: Export AWS & OCI ENV Variables
 
 on:
   workflow_dispatch:
 
 env:
-  AWS_REGION: us-east-1  # Hardcoded default or override in your environment if needed
+  AWS_REGION: us-east-1  # Optional override
+  OCI_REGION: us-ashburn-1  # Optional override
 
 jobs:
   export-env:
-    runs-on: [self-hosted, macOS]  # Targets your Mac runner
-    environment: pre-prod  # Must match the environment configured in GitHub
+    runs-on: [self-hosted, macOS]  # The Mac GitHub Runner
+    environment: pre-prod
 
     steps:
-    - name: Print AWS variables from environment and secrets
+    - name: Print AWS & OCI variables from environment and secrets
       run: |
         echo "Setting environment variables from GitHub Environment 'pre-prod'..."
 
-        # Export GitHub secrets
+        # AWS secrets
         echo "*** AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
         echo "*** AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
-
-        # Export GitHub environment variable
         echo "S3_BUCKET_NAME=${{ vars.S3_BUCKET_NAME }}" >> $GITHUB_ENV
 
-        echo " ### Environment variables exported."
+        # OCI secrets and vars
+        echo "OCI_TENANCY_OCID=${{ secrets.OCI_TENANCY_OCID }}" >> $GITHUB_ENV
+        echo "OCI_USER_OCID=${{ secrets.OCI_USER_OCID }}" >> $GITHUB_ENV
+        echo "OCI_FINGERPRINT=${{ secrets.OCI_FINGERPRINT }}" >> $GITHUB_ENV
+        echo "OCI_PRIVATE_KEY_BASE64=${{ secrets.OCI_PRIVATE_KEY_BASE64 }}" >> $GITHUB_ENV
+        echo "OCI_REGION=${{ vars.OCI_REGION }}" >> $GITHUB_ENV
+        echo "OCI_BUCKET_NAME=${{ vars.OCI_BUCKET_NAME }}" >> $GITHUB_ENV
 
-    - name: Verify values (debug only, don't print secrets in real workflows)
+        echo "All environment variables exported."
+
+    - name: Verify values (DO NOT print secrets in real workflows)
       run: |
-        echo "Verify S3_BUCKET_NAME: $S3_BUCKET_NAME"
-        echo "Verify AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:0:4}********"
+        echo "S3_BUCKET_NAME: $S3_BUCKET_NAME"
+        echo "OCI_BUCKET_NAME: $OCI_BUCKET_NAME"
+        echo "OCI_REGION: $OCI_REGION"
+        echo "OCI_TENANCY_OCID: ${OCI_TENANCY_OCID:0:10}..."
+
