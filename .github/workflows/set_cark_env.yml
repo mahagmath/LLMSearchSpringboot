@@ -34,7 +34,7 @@ jobs:
 
         echo "All environment variables exported."
 
-    - name: Verify values (DO NOT print secrets in real workflows)
+    - name: Verify values (DO NOT PRINT SECRETS AT  ALL in real workflows)
       run: |
         echo "S3_BUCKET_NAME: $S3_BUCKET_NAME"
         echo "OCI_BUCKET_NAME: $OCI_BUCKET_NAME"
