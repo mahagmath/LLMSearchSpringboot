@@ -1,0 +1,32 @@
+# .github/workflows/set_env.yml
+
+name: Export AWS env Variables use :aws_mahag2025 env
+
+on:
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1  
+ 
+#jobs
+jobs:
+  export-env:
+    runs-on: [self-hosted, macOS]  # The Mac GitHub Runner
+    environment: aws_mahag2025
+
+    steps:
+    - name: Print AWS  variables from environment and secrets
+      run: |
+        echo "Setting environment variables from GitHub Environment 'aws_mahag2025'..."
+
+        # AWS secrets
+        echo "*** AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+        echo "*** AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+        echo "S3_BUCKET_NAME=${{ vars.S3_BUCKET_NAME }}" >> $GITHUB_ENV
+
+        echo "All environment variables exported."
+
+    - name: Verify values (DO NOT PRINT SECRETS AT  ALL in real workflows)
+      run: |
+        echo "S3_BUCKET_NAME: $S3_BUCKET_NAME"
+       
